@@ -1,0 +1,113 @@
+﻿@page "/ui_03"
+@inject INavigation NavigationManager
+@using System.Net.Http
+
+
+
+<ContentPage BackgroundColor="Color.FromRgb(255, 255, 255)">
+    <SwipeView>
+        <Grid RowDefinitions="*,0.1*">
+            <GridCell Row="0" Column="0">
+
+                <Grid HorizontalOptions="LayoutOptions.Fill" VerticalOptions="LayoutOptions.Fill">
+
+                    <ScrollView VerticalOptions="LayoutOptions.Fill" VerticalScrollBarVisibility="ScrollBarVisibility.Never">
+                        <StackLayout>
+                            @if (testClass != null && testClass.Categories != null)
+                            {
+                                @foreach (Category cat in testClass.Categories)
+                                {
+                                    <StackLayout BackgroundColor="Color.FromRgb(255, 255, 255)">
+                                        <Main_Component Category="cat" />
+                                    </StackLayout>
+                                }
+                            }
+                        </StackLayout>
+                    </ScrollView>
+                </Grid>
+
+            </GridCell>
+            <GridCell Row="1" Column="0">
+
+                <Grid ColumnDefinitions="0.1*,0.8*,0.1*">
+                    <GridCell Row="0" Column="0">
+                        <ImageButton Source="@homeicon" HeightRequest="24" Margin="MARGIN_LEFT_5" OnClick="@(async () => await OnSwitch.InvokeAsync())" />
+                    </GridCell>
+                    <GridCell Row="0" Column="1">
+                        <ImageButton Source="@microphoneicon" HeightRequest="24" />
+                    </GridCell>
+                    <GridCell Row="0" Column="2">
+                        <ImageButton Source="@settingsicon" HeightRequest="24" Margin="MARGIN_RIGHT_5" />
+                    </GridCell>
+                </Grid>
+
+            </GridCell>
+
+            <!--<SwipeGestureRecognizer Direction="SwipeDirection.Up" OnSwiped="@OnSwipe" />
+            <SwipeGestureRecognizer Direction="SwipeDirection.Down" OnSwiped="@OnSwipe" />-->
+
+        </Grid>
+
+    </SwipeView>
+</ContentPage>
+
+
+
+@code{
+    [Parameter]
+    public EventCallback OnSwitch { get; set; }
+
+
+
+    Color backgroundColor = Color.FromRgb(100, 100, 100);
+    ScrollView scrollview;
+    TestClass testClass = null;
+
+
+    FontImageSource homeicon = new FontImageSource() { FontFamily = "FontAwesome", Glyph = IconFont.House, Size = 32, Color = Color.FromRgb(0, 0, 0) };
+    FontImageSource microphoneicon = new FontImageSource() { FontFamily = "FontAwesome", Glyph = IconFont.Microphone, Size = 32, Color = Color.FromRgb(0, 0, 0) };
+    FontImageSource settingsicon = new FontImageSource() { FontFamily = "FontAwesome", Glyph = IconFont.Gear, Size = 32, Color = Color.FromRgb(0, 0, 0) };
+
+    Thickness MARGIN_LEFT_5 = new Thickness(10, 0, 0, 0);
+    Thickness MARGIN_RIGHT_5 = new Thickness(0, 0, 15, 0);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetData();
+        await PopulateData();
+        await base.OnInitializedAsync();
+    }
+
+
+    
+
+
+    private async Task PopulateData()
+    {
+        testClass = new TestClass();
+
+    }
+    private async Task GetData()
+    {
+        //HttpClientHandler handler = new HttpClientHandler();
+        // Set custom server validation callback
+        //handler.ServerCertificateCustomValidationCallback = (o, c, ch, er) => true;
+        using (var client = new HttpClient())
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"https://jsonplaceholder.typicode.com/todos/1");
+            try
+            {
+                var response = await client.SendAsync(request);
+                var kkk = await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            //response.EnsureSuccessStatusCode();
+
+        }
+
+    }
+
+}

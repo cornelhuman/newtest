@@ -1,0 +1,100 @@
+﻿
+
+<Grid RowDefinitions="*,Auto">
+    <CarouselView ItemsSource="Category.Items"
+                  Loop="false"
+                  IndicatorView="() => indicatorView"
+                  @bind-CurrentItem="currentItem"
+                  @bind-Position="currentPosition" MaximumHeightRequest="350" HorizontalScrollBarVisibility="ScrollBarVisibility.Never">
+        <ItemTemplate>
+            <VerticalStackLayout>
+                <Grid RowDefinitions="0.7*,0.3*" Margin="@(new Thickness(0, 20, 0, 10))">
+                    <Label Text="@context.Text" HorizontalTextAlignment="TextAlignment.Center" VerticalTextAlignment="TextAlignment.Center" FontSize="20" FontFamily="OpenSansBold" FontAttributes="FontAttributes.Bold" Grid.Row="0" />
+                </Grid>
+                <Image Source="@(ImageSource.FromUri(new Uri($"{context.ImageUrl}")))" Aspect="Aspect.AspectFill" HeightRequest="280" />
+            </VerticalStackLayout>
+        </ItemTemplate>
+    </CarouselView>
+    <VerticalStackLayout Grid.Row="1" Margin="@(new Thickness(0,10,0,0))">
+        <Grid ColumnDefinitions="*,*,*" RowDefinitions="*">
+            <GridCell Row="0" Column="0">
+                <HorizontalStackLayout Margin="@(new Thickness(10,10,0,10))">
+                    <ImageButton Source="@related" HeightRequest="20" Margin="@(new Thickness(5,0,5,0))" />
+                    <ImageButton Source="@flashcards" HeightRequest="20" Margin="@(new Thickness(5,0,5,0))" />
+
+                </HorizontalStackLayout>
+            </GridCell>
+            <GridCell Row="0" Column="1">
+                <IndicatorView @ref="indicatorView" HorizontalOptions="LayoutOptions.Center"
+                               IndicatorColor="Colors.DarkGray"
+                               SelectedIndicatorColor="Colors.LightGray" Margin="@(new Thickness(0,10,0,10))" IndicatorSize="4.5" />
+            </GridCell>
+            <GridCell Row="0" Column="2">
+                <HorizontalStackLayout Margin="@(new Thickness(0,10,10,10))" HorizontalOptions="LayoutOptions.End">
+                    <ImageButton Source="@display" HeightRequest="20" Margin="@(new Thickness(5,0,5,0))" />
+                    <ImageButton Source="@thumbtack" HeightRequest="20" Margin="@(new Thickness(5,0,5,0))" />
+                </HorizontalStackLayout>
+            </GridCell>
+
+        </Grid>
+        <Grid ColumnDefinitions="80,50" RowDefinitions="*,*,*,*" Margin="@(new Thickness(15,10,0,0))">
+            <GridCell Row="0" Column="0">
+                <Label FontSize="14" FontFamily="OpenSansRegular" Text="Type"></Label>
+            </GridCell>
+            <GridCell Row="0" Column="1">
+                <Label FontSize="14" FontFamily="OpenSansRegular" Text=": Noun"></Label>
+            </GridCell>
+            <GridCell Row="1" Column="0">
+                <Label FontSize="14" FontFamily="OpenSansRegular" Text="Phonetic"></Label>
+            </GridCell>
+            <GridCell Row="1" Column="1">
+                <Label FontSize="14" FontFamily="OpenSansRegular" Text=": apple"></Label>
+            </GridCell>
+            <GridCell Row="2" Column="0">
+                <Label FontSize="14" FontFamily="OpenSansRegular" Text="Level"></Label>
+            </GridCell>
+            <GridCell Row="2" Column="1">
+                <Label FontSize="14" FontFamily="OpenSansRegular" Text=": A1"></Label>
+            </GridCell>
+            <GridCell Row="3" Column="0">
+                <Label FontSize="14" FontFamily="OpenSansRegular" Text="Viewed"></Label>
+            </GridCell>
+            <GridCell Row="3" Column="1">
+                <Label FontSize="14" FontFamily="OpenSansRegular" Text=": 5"></Label>
+            </GridCell>
+        </Grid>
+
+
+        <BoxView Margin="@(new Thickness(0, 30, 0, 0))"
+                 HeightRequest="6"
+                 HorizontalOptions="LayoutOptions.Fill" />
+    </VerticalStackLayout>
+</Grid>
+
+
+@code {
+    [Parameter]
+    public Category Category { get; set; }
+
+    Item currentItem = null;
+    int currentPosition = 0;
+
+    IndicatorView indicatorView;
+
+    FontImageSource display = new FontImageSource() { FontFamily = "FontAwesome", Glyph = IconFont.PaperPlane, Size = 32, Color = Color.FromRgb(50, 50, 50) };
+    FontImageSource thumbtack = new FontImageSource() { FontFamily = "FontAwesome", Glyph = IconFont.Thumbtack, Size = 32, Color = Color.FromRgb(50, 50, 50) };
+    FontImageSource bookopen = new FontImageSource() { FontFamily = "FontAwesome", Glyph = IconFont.BookOpen, Size = 32, Color = Color.FromRgb(50, 50, 50) };
+    FontImageSource flashcards = new FontImageSource() { FontFamily = "FontAwesome", Glyph = IconFont.Award, Size = 32, Color = Color.FromRgb(50, 50, 50) };
+    FontImageSource related = new FontImageSource() { FontFamily = "FontAwesome", Glyph = IconFont.Link, Size = 32, Color = Color.FromRgb(50, 50, 50) };
+
+
+    protected override void OnParametersSet()
+    {
+        if(Category.Items != null)
+        currentItem = Category.Items[0];
+        base.OnParametersSet();
+    }
+
+
+
+}
